@@ -39,6 +39,7 @@ function App() {
             <Route path="/verify-email" element={<VerifyEmail />} />
             <Route path="/auth/verify/:token" element={<VerifyEmail />} />
             <Route path="/auth/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/auth/reset-password/:token" element={<ResetPassword />} />
             <Route path="/owner" element={<OwnerLayout />}>
               <Route path="dashboard" element={<Dashboard />} />
