@@ -1,8 +1,9 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import CustomerLayout from './layouts/CustomerLayout';
 import OwnerLayout from './layouts/OwnerLayout';
+import ProtectedRoute from './components/common/ProtectedRoute';
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
 import VerifyEmail from './pages/auth/VerifyEmail';
@@ -19,6 +20,24 @@ import Dashboard from './pages/owner/Dashboard';
 import OrdersManage from './pages/owner/OrdersManage';
 import OwnerProfile from './pages/owner/OwnerProfile';
 
+function AuthRoute({ children }) {
+  const { isAuthenticated, isLoading } = useAuth();
+  
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
+      </div>
+    );
+  }
+  
+  if (isAuthenticated) {
+    return <Navigate to="/" replace />;
+  }
+  
+  return children;
+}
+
 function App() {
   return (
     <AuthProvider>
@@ -30,18 +49,42 @@ function App() {
               <Route path="products" element={<Products />} />
               <Route path="products/:id" element={<ProductDetail />} />
               <Route path="cart" element={<Cart />} />
-              <Route path="checkout" element={<Checkout />} />
-              <Route path="profile" element={<Profile />} />
-              <Route path="orders" element={<OrderHistory />} />
+              <Route path="checkout" element={
+                <ProtectedRoute>
+                  <Checkout />
+                </ProtectedRoute>
+              } />
+              <Route path="profile" element={
+                <ProtectedRoute>
+                  <Profile />
+                </ProtectedRoute>
+              } />
+              <Route path="orders" element={
+                <ProtectedRoute>
+                  <OrderHistory />
+                </ProtectedRoute>
+              } />
             </Route>
-            <Route path="/auth/login" element={<Login />} />
-            <Route path="/auth/register" element={<Register />} />
+            <Route path="/auth/login" element={
+              <AuthRoute>
+                <Login />
+              </AuthRoute>
+            } />
+            <Route path="/auth/register" element={
+              <AuthRoute>
+                <Register />
+              </AuthRoute>
+            } />
             <Route path="/verify-email" element={<VerifyEmail />} />
             <Route path="/auth/verify/:token" element={<VerifyEmail />} />
             <Route path="/auth/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/auth/reset-password/:token" element={<ResetPassword />} />
-            <Route path="/owner" element={<OwnerLayout />}>
+            <Route path="/owner" element={
+              <ProtectedRoute>
+                <OwnerLayout />
+              </ProtectedRoute>
+            }>
               <Route path="dashboard" element={<Dashboard />} />
               <Route path="orders" element={<OrdersManage />} />
               <Route path="profile" element={<OwnerProfile />} />
