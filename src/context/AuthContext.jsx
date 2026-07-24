@@ -21,7 +21,7 @@ export function AuthProvider({ children }) {
         setRefreshToken(storedRefreshToken);
         try {
           const response = await authService.getProfile();
-          setUser(response.data.user);
+          setUser(response.data.data.user);
           setIsAuthenticated(true);
         } catch (error) {
           if (error.response?.status === 401) {
@@ -44,7 +44,7 @@ export function AuthProvider({ children }) {
 
     try {
       const response = await authService.refreshToken(token);
-      const { accessToken: newAccessToken, refreshToken: newRefreshToken, user: userData } = response.data;
+      const { accessToken: newAccessToken, refreshToken: newRefreshToken, user: userData } = response.data.data;
 
       sessionStorage.setItem('accessToken', newAccessToken);
       localStorage.setItem('refreshToken', newRefreshToken);
@@ -63,7 +63,7 @@ export function AuthProvider({ children }) {
 
   const login = async (credentials) => {
     const response = await authService.login(credentials);
-    const { accessToken: newAccessToken, refreshToken: newRefreshToken, user: userData } = response.data;
+    const { accessToken: newAccessToken, refreshToken: newRefreshToken, user: userData } = response.data.data;
 
     sessionStorage.setItem('accessToken', newAccessToken);
     localStorage.setItem('refreshToken', newRefreshToken);
