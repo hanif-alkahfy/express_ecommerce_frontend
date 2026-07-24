@@ -34,13 +34,11 @@ function App() {
               <Route path="profile" element={<Profile />} />
               <Route path="orders" element={<OrderHistory />} />
             </Route>
-            <Route path="/auth" element={<CustomerLayout />}>
-              <Route path="login" element={<Login />} />
-              <Route path="register" element={<Register />} />
-              <Route path="verify/:token" element={<VerifyEmail />} />
-              <Route path="forgot-password" element={<ForgotPassword />} />
-              <Route path="reset-password/:token" element={<ResetPassword />} />
-            </Route>
+            <Route path="/auth/login" element={<Login />} />
+            <Route path="/auth/register" element={<Register />} />
+            <Route path="/auth/verify/:token" element={<VerifyEmail />} />
+            <Route path="/auth/forgot-password" element={<ForgotPassword />} />
+            <Route path="/auth/reset-password/:token" element={<ResetPassword />} />
             <Route path="/owner" element={<OwnerLayout />}>
               <Route path="dashboard" element={<Dashboard />} />
               <Route path="orders" element={<OrdersManage />} />
