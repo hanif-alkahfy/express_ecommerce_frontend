@@ -37,7 +37,8 @@ export default function Products() {
         if (priceRange.max) params.maxPrice = priceRange.max;
         
         const response = await productService.getProducts(params);
-        setProducts(response.data.data || response.data || []);
+        const productsData = response.data.data;
+        setProducts(productsData.products || productsData || []);
       } catch (err) {
         setError('Failed to load products');
         console.error(err);

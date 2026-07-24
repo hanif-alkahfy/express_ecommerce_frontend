@@ -21,8 +21,8 @@ export default function ProductDetail() {
       try {
         setLoading(true);
         const response = await productService.getProductById(id);
-        const productData = response.data.data || response.data;
-        setProduct(productData);
+        const productData = response.data.data;
+        setProduct(productData.product || productData);
       } catch (err) {
         setError('Failed to load product');
         console.error(err);
@@ -35,11 +35,13 @@ export default function ProductDetail() {
   }, [id]);
 
   const handleQuantityChange = (delta) => {
-    setQuantity(prev => Math.max(1, Math.min(prev + delta, product?.stock || 1)));
+    const stock = product?.stock || product?.stock_quantity || 0;
+    setQuantity(prev => Math.max(1, Math.min(prev + delta, stock)));
   };
 
   const handleAddToCart = () => {
-    if (product && product.stock > 0) {
+    const stock = product?.stock || product?.stock_quantity || 0;
+    if (product && stock > 0) {
       addItem(product, quantity);
       setAddedToCart(true);
       setTimeout(() => setAddedToCart(false), 2000);
@@ -47,7 +49,8 @@ export default function ProductDetail() {
   };
 
   const handleBuyNow = () => {
-    if (product && product.stock > 0) {
+    const stock = product?.stock || product?.stock_quantity || 0;
+    if (product && stock > 0) {
       addItem(product, quantity);
       navigate('/checkout');
     }
@@ -85,8 +88,11 @@ export default function ProductDetail() {
     );
   }
 
-  const isOutOfStock = product.stock === 0;
-  const images = product.images || (product.image ? [product.image] : []);
+  const isOutOfStock = (product.stock || product.stock_quantity || 0) === 0;
+  const images = product.images?.length > 0 ? product.images 
+    : product.image ? [product.image] 
+    : product.image_url ? [product.image_url] 
+    : [];
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -147,7 +153,7 @@ export default function ProductDetail() {
                 ? 'bg-red-100 text-red-800' 
                 : 'bg-green-100 text-green-800'
             }`}>
-              {isOutOfStock ? 'Out of Stock' : `${product.stock} available`}
+              {isOutOfStock ? 'Out of Stock' : `${product.stock || product.stock_quantity} available`}
             </span>
           </div>
 
@@ -178,7 +184,7 @@ export default function ProductDetail() {
                 <span className="text-lg font-medium">{quantity}</span>
                 <button
                   onClick={() => handleQuantityChange(1)}
-                  disabled={quantity >= product.stock}
+                  disabled={quantity >= (product.stock || product.stock_quantity)}
                   className="w-10 h-10 rounded-md border border-gray-200 flex items-center justify-center hover:bg-gray-50 disabled:opacity-50"
                 >
                   +

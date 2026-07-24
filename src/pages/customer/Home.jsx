@@ -13,7 +13,8 @@ export default function Home() {
       try {
         setLoading(true);
         const response = await productService.getProducts({ limit: 8 });
-        setFeaturedProducts(response.data.data || response.data || []);
+        const productsData = response.data.data;
+        setFeaturedProducts(productsData.products || productsData || []);
       } catch (err) {
         setError('Failed to load products');
         console.error(err);

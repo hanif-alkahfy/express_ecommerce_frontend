@@ -4,7 +4,7 @@ import formatCurrency from '../../utils/formatCurrency';
 
 export default function ProductCard({ product }) {
   const { addItem } = useCart();
-  const isOutOfStock = product.stock === 0;
+  const isOutOfStock = (product.stock || product.stock_quantity || 0) === 0;
 
   const handleAddToCart = (e) => {
     e.preventDefault();
@@ -17,9 +17,9 @@ export default function ProductCard({ product }) {
     <Link to={`/products/${product.id}`} className="group">
       <div className="border border-gray-200 rounded-lg overflow-hidden bg-white hover:shadow-lg transition-shadow">
         <div className="aspect-square overflow-hidden bg-gray-100">
-          {product.image ? (
+          {product.image_url || product.image ? (
             <img
-              src={product.image}
+              src={product.image_url || product.image}
               alt={product.name}
               className="w-full h-full object-cover group-hover:scale-105 transition-transform"
             />
@@ -44,7 +44,7 @@ export default function ProductCard({ product }) {
               {formatCurrency(product.price)}
             </p>
             <span className={`text-xs ${isOutOfStock ? 'text-red-600' : 'text-green-600'}`}>
-              {isOutOfStock ? 'Out of Stock' : `${product.stock} available`}
+              {isOutOfStock ? 'Out of Stock' : `${product.stock || product.stock_quantity} available`}
             </span>
           </div>
           
