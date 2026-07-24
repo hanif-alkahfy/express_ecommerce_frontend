@@ -21,14 +21,18 @@ export function AuthProvider({ children }) {
         setRefreshToken(storedRefreshToken);
         try {
           const response = await authService.getProfile();
-          setUser(response.data.data.user);
+          setUser(response.data.data?.user || response.data?.user);
           setIsAuthenticated(true);
         } catch (error) {
-          if (error.response?.status === 401) {
+          if (error.response?.status === 404) {
+            setIsAuthenticated(true);
+          } else if (error.response?.status === 401) {
             const refreshed = await tryRefreshToken(storedRefreshToken);
             if (!refreshed) {
               logout();
             }
+          } else {
+            setIsAuthenticated(true);
           }
         }
       }
