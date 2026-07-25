@@ -16,6 +16,8 @@ import Cart from './pages/customer/Cart';
 import Checkout from './pages/customer/Checkout';
 import Profile from './pages/customer/Profile';
 import OrderHistory from './pages/customer/OrderHistory';
+import PaymentSuccess from './pages/customer/PaymentSuccess';
+import PaymentCancel from './pages/customer/PaymentCancel';
 import Dashboard from './pages/owner/Dashboard';
 import OrdersManage from './pages/owner/OrdersManage';
 import OwnerProfile from './pages/owner/OwnerProfile';
@@ -64,6 +66,8 @@ function App() {
                   <OrderHistory />
                 </ProtectedRoute>
               } />
+              <Route path="payment/success" element={<PaymentSuccess />} />
+              <Route path="payment/cancel" element={<PaymentCancel />} />
             </Route>
             <Route path="/auth/login" element={
               <AuthRoute>
